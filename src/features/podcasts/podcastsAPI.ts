@@ -48,7 +48,7 @@ export const fetchEpisodes = async (podcastId: string): Promise<DataHandler<Podc
       title: episode.trackName,
       description: episode.description,
       duration: episode.trackTimeMillis,
-      episodeUrl: episode.trackViewUrl,
+      episodeUrl: episode.previewUrl,
       releaseDate: new Date(episode.releaseDate),
     }})
     console.log(mappedData)
