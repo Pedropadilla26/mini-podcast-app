@@ -37,13 +37,14 @@ export const fetchPodcast = async (id: string): Promise<DataHandler<PodcastInfoD
 }
 
 export const fetchEpisodes = async (podcastId: string): Promise<DataHandler<PodcastEpisodesList>> => {
-  const data = await fetch(encodeWithAllOrigins(`/lookup?id=${podcastId}&media=podcast&entity=podcastEpisode&limit=500`))
+  console.log("che ", encodeWithAllOrigins(`/lookup?id=${podcastId}&media=podcast&entity=podcastEpisode&limit=500`))
+  const data = await fetch(encodeWithAllOrigins(`/lookup?id=${podcastId}&country=US&media=podcast&entity=podcastEpisode&limit=500`))
                 .then((res) => res.json())
   const processedData = JSON.parse(data.contents)
-  console.log(processedData)
+  console.log("processed", processedData)
   const mappedData = processedData.results.map((episode: any) => {
     if (episode.wrapperType === 'track') { // Filter out the podcast info
-      return 
+      return null
     }
     return {
       id: episode.trackId,
@@ -53,10 +54,11 @@ export const fetchEpisodes = async (podcastId: string): Promise<DataHandler<Podc
       episodeUrl: episode.trackViewUrl,
       releaseDate: new Date(episode.releaseDate),
     }})
+    console.log(mappedData)
   return {
     data: {
       podcastId,
-      episodes: mappedData,
+      episodes: mappedData.filter((ep: PodcastEpisodesList) => ep),
       fetchedAt: new Date().toLocaleString(),
     }
   }

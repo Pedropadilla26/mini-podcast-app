@@ -12,39 +12,6 @@ type Props = {
     filterText: string
 }
 
-const podcastsData: PodcastInfo[] = [
-  {
-    id: "1",
-    title: "The Joe Rogan Experience",
-    author: "Joe Rogan",
-    image: "https://picsum.photos/200/300",
-  },
-  {
-    id: "2",
-    title: "The Joe Rogan 2 Experience",
-    author: "Joe Rogan",
-    image: "https://picsum.photos/200/300",
-  },
-  {
-    id: "3",
-    title: "The Mcdonalds Experience",
-    author: "Joe Rogan",
-    image: "https://picsum.photos/200/300",
-  },
-  {
-    id: "4",
-    title: "The Joe Rogan 3 Experience",
-    author: "Joe Rogan",
-    image: "https://picsum.photos/200/300",
-  },
-  {
-    id: "5",
-    title: "The Joe Rogan 4 Experience",
-    author: "Joe Rogan",
-    image: "https://picsum.photos/200/300",
-  },
-]
-
 export const PodcastList = ({ filterText }: Props) => {
 
   const podcasts = useAppSelector(selectPodcastsList);
