@@ -9,11 +9,16 @@ import {
   BrowserRouter,
   Route
 } from "react-router-dom";
+import { PodcastDetailScreen } from './screens/PodcastDetailScreen';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <PodcastListScreen/>,
+  },
+  {
+    path: "/podcast/:id",
+    element: <PodcastDetailScreen/>,
   },
 ]);
 

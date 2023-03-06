@@ -4,15 +4,17 @@ import { useState } from "react";
 import { styles } from "./podcastCard.styles";
 import { Card, CardActionArea, TextField } from "@mui/material";
 import { PodcastInfo } from "../constants/types";
+import { useNavigate } from "react-router";
 
 type Props = {
     podcastInfo: PodcastInfo
 }
 
 export const PodcastCard = ({ podcastInfo }: Props) => {
+    const navigate = useNavigate();
 
     const handleOnClick = () => {
-        console.log("clicked on podcast")
+        navigate(`/podcast/${podcastInfo.id}`)
     }
   return (
     <Card onClick={handleOnClick}>
