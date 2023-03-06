@@ -18,12 +18,12 @@ export const PodcastCard = ({ podcastInfo }: Props) => {
     <Card onClick={handleOnClick}>
         <CardActionArea style={styles.container}>
         <img style={styles.image} src={podcastInfo.image} alt={`${podcastInfo.title} image`}/>
-        <text style={styles.title}>
+        <div style={styles.title}>
             {podcastInfo.title}
-        </text>
-        <text style={styles.author}>
+        </div>
+        <div style={styles.author}>
             {`Author: ${podcastInfo.author}`}
-        </text>
+        </div>
         </CardActionArea>
     </Card  >
   );

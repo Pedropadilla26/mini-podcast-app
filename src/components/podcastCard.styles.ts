@@ -18,10 +18,12 @@ export const styles = {
     author: {
         fontSize: 15,
         color: colors.darkGray,
+        marginTop: 7
     },
     title: {
         fontSize: 17,
         color: colors.black,
+        marginTop: 5
     },
     image: {
         width: 130,
