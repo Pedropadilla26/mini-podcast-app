@@ -118,5 +118,6 @@ export const selectPodcastsList = (state: RootState) => state.podcasts.list;
 export const selectPodcastDetailed = (id: string) => (state: RootState) => state.podcasts.detailedList[id];
 export const selectPodcastEpisodes = (id: string) => (state: RootState) => state.podcasts.episodesList[id]?.episodes;
 export const selectPodcastEpisode = (podcastId: string, episodeId: string) => (state: RootState) => state.podcasts.episodesList[podcastId]?.episodes.find((episode) => episode.id == episodeId);
+export const selectPodcastApiStatus = () => (state: RootState) =>  state.podcasts.status
 
 export default podcastsSlice.reducer;
