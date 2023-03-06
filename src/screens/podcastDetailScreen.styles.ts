@@ -1,4 +1,3 @@
-
 export const styles = {
     container: {
         display: "flex",
@@ -8,10 +7,7 @@ export const styles = {
         justifyContent: "space-between",
     },
     podcastImageContainer: {
-        display: "block",
-        marginLeft: "auto",
-        marginRight: "auto",
-        width:" 50%",
+
     },
     podcastTitleContainer: {
         fontWeight: "bold" as const,
@@ -29,12 +25,13 @@ export const styles = {
         padding: 10
     },
     episodesListContainer: {
-
+        marginTop: 20,
     },
     image: {
         width: 150,
         height: 150,
-        borderRadius: 5,
+        borderRadius: 10,
+        alignSelf: "center",
     },
     podcastAuthorContainer: {
         fontStyle: "italic" as const,

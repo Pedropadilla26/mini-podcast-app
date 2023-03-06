@@ -19,7 +19,7 @@ export interface PodcastsState {
 const initialState: PodcastsState = {
   list: [],
   status: 'idle',
-  fetchedAtList: null, // Create a date in 1970, so it's always older than any other date,
+  fetchedAtList: null,
   detailedList: {},
   episodesList: {},
 };
@@ -117,5 +117,6 @@ export const podcastsSlice = createSlice({
 export const selectPodcastsList = (state: RootState) => state.podcasts.list;
 export const selectPodcastDetailed = (id: string) => (state: RootState) => state.podcasts.detailedList[id];
 export const selectPodcastEpisodes = (id: string) => (state: RootState) => state.podcasts.episodesList[id]?.episodes;
+export const selectPodcastEpisode = (podcastId: string, episodeId: string) => (state: RootState) => state.podcasts.episodesList[podcastId]?.episodes.find((episode) => episode.id === episodeId);
 
 export default podcastsSlice.reducer;
