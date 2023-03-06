@@ -15,7 +15,11 @@ export type PodcastInfoDetailed = {
     collectionName: string;
     trackId: string;
     trackName: string;
-    fetchedAt: Date;
+    fetchedAt: string;
+    title?: string;
+    image?: string;
+    author?: string;
+    description?: string;
 }
 
 export type PodcastEpisode = {
@@ -24,13 +28,13 @@ export type PodcastEpisode = {
     description: string;
     duration: number;
     episodeUrl: string;
-    releaseDate: Date;
+    releaseDate: string;
 }
 
 export type PodcastEpisodesList = {
     podcastId: string;
     episodes: PodcastEpisode[];
-    fetchedAt: Date;
+    fetchedAt: string;
 }
 
 export type DataHandler<T> = {

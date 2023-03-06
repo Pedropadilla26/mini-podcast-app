@@ -1,5 +1,5 @@
 import { DataHandler, PodcastEpisodesList, PodcastInfo, PodcastInfoDetailed } from "../../constants/types"
-import { FetchEpisodesArgs } from "./podcastsSlice"
+import { encodeWithAllOrigins } from "../../utils/encodeWithAllOrigins"
 
 // Fetches the top 100 podcasts from the iTunes API
 export const fetchPodcasts = async (limit = 100): Promise<DataHandler<PodcastInfo[]>> => {
@@ -18,27 +18,30 @@ export const fetchPodcasts = async (limit = 100): Promise<DataHandler<PodcastInf
 }
 
 export const fetchPodcast = async (id: string): Promise<DataHandler<PodcastInfoDetailed>> => {
-  const data = await fetch(`https://
-  itunes.apple.com/lookup?id=${id}`).then((res) => res.json())
-  const mappedData = data.results[0].map((podcast: any) => {
-    return {
-      artistId: podcast.artistId,
-      artistName: podcast.artistName,
-      collectionId: podcast.collectionId,
-      collectionName: podcast.collectionName,
-      trackId: podcast.trackId,
-      trackName: podcast.trackName,
-      fetchedAt: new Date(),
-      podcastId: id
-    }})
+  const data = await fetch(encodeWithAllOrigins(`/lookup?id=${id}`))
+                .then((data) => data.json())
+  const processedData = JSON.parse(data.contents)
+  const mappedObject = {
+    id,
+    collectionName: processedData.results[0].collectionName,
+    artistName: processedData.results[0].artistName,
+    artistId: processedData.results[0].artistId,
+    collectionId: processedData.results[0].collectionId,
+    trackId: processedData.results[0].trackId,
+    trackName: processedData.results[0].trackName,
+    fetchedAt: new Date().toLocaleString(),
+  }
   return {
-    data: mappedData
+    data: mappedObject
   }
 }
 
-export const fetchEpisodes = async ({podcastId, collectionId}: FetchEpisodesArgs): Promise<DataHandler<PodcastEpisodesList>> => {
-  const data = await fetch(`https://itunes.apple.com/lookup?id=${collectionId}media=podcast&entity=podcastEpisode&limit=100`).then((res) => res.json())
-  const mappedData = data.results.map((episode: any) => {
+export const fetchEpisodes = async (podcastId: string): Promise<DataHandler<PodcastEpisodesList>> => {
+  const data = await fetch(encodeWithAllOrigins(`/lookup?id=${podcastId}&media=podcast&entity=podcastEpisode&limit=500`))
+                .then((res) => res.json())
+  const processedData = JSON.parse(data.contents)
+  console.log(processedData)
+  const mappedData = processedData.results.map((episode: any) => {
     if (episode.wrapperType === 'track') { // Filter out the podcast info
       return 
     }
@@ -52,9 +55,9 @@ export const fetchEpisodes = async ({podcastId, collectionId}: FetchEpisodesArgs
     }})
   return {
     data: {
-      podcastId: collectionId,
+      podcastId,
       episodes: mappedData,
-      fetchedAt: new Date(),
+      fetchedAt: new Date().toLocaleString(),
     }
   }
 }

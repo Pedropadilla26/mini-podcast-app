@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState, store } from '../../app/store';
 import { PodcastEpisodesList, PodcastInfo, PodcastInfoDetailed } from '../../constants/types';
+import { dateStringIsOlderThanADay } from '../../utils/dateStringIsOlderThanADay';
 import { fetchEpisodes, fetchPodcast, fetchPodcasts } from './podcastsAPI';
 
 export interface PodcastsState {
   list: PodcastInfo[];
-  fetchedAtList: Date;
+  fetchedAtList: string | null;
   status: 'idle' | 'loading' | 'failed';
   detailedList: {
     [id: string]: PodcastInfoDetailed;
@@ -15,15 +16,10 @@ export interface PodcastsState {
   }
 }
 
-export interface FetchEpisodesArgs {
-  podcastId: string;
-  collectionId: string;
-}
-
 const initialState: PodcastsState = {
   list: [],
   status: 'idle',
-  fetchedAtList: new Date(0), // Create a date in 1970, so it's always older than any other date,
+  fetchedAtList: null, // Create a date in 1970, so it's always older than any other date,
   detailedList: {},
   episodesList: {},
 };
@@ -31,7 +27,8 @@ const initialState: PodcastsState = {
 export const fetchPodcastsAsync = createAsyncThunk(
   'podcasts/fetchPodcasts',
   async () => {
-    if (store.getState().podcasts.fetchedAtList > new Date(Date.now() - 1000 * 60 * 60)) {
+    const fetchedAt = store.getState().podcasts.fetchedAtList
+    if (!fetchedAt || dateStringIsOlderThanADay(fetchedAt)) {
       return store.getState().podcasts.list;
     }
     const response = await fetchPodcasts();
@@ -42,7 +39,7 @@ export const fetchPodcastsAsync = createAsyncThunk(
 export const fetchPodcastAsync = createAsyncThunk(
   'podcasts/fetchPodcast',
   async (id: string) => {
-    if (store.getState().podcasts.detailedList[id] && store.getState().podcasts.detailedList[id].fetchedAt > new Date(Date.now() - 1000 * 60 * 60)) {
+    if (store.getState().podcasts.detailedList[id] && dateStringIsOlderThanADay(store.getState().podcasts.detailedList[id].fetchedAt)) {
       return store.getState().podcasts.detailedList[id];
     }
     const response = await fetchPodcast(id);
@@ -52,11 +49,11 @@ export const fetchPodcastAsync = createAsyncThunk(
 
 export const fetchEpisodesAsync = createAsyncThunk(
   'podcasts/fetchEpisodes',
-  async ({podcastId, collectionId}: FetchEpisodesArgs) => {
-    if (store.getState().podcasts.episodesList[collectionId] && store.getState().podcasts.episodesList[collectionId].fetchedAt > new Date(Date.now() - 1000 * 60 * 60)) {
-      return store.getState().podcasts.episodesList[collectionId];
+  async (podcastId: string) => {
+    if (store.getState().podcasts.episodesList[podcastId] && dateStringIsOlderThanADay(store.getState().podcasts.episodesList[podcastId].fetchedAt)) {
+      return store.getState().podcasts.episodesList[podcastId];
     }
-    const response = await fetchEpisodes({podcastId, collectionId});
+    const response = await fetchEpisodes(podcastId);
     return response.data;
   }
 );
@@ -74,6 +71,7 @@ export const podcastsSlice = createSlice({
       .addCase(fetchPodcastsAsync.fulfilled, (state, action) => {
         state.status = 'idle';
         state.list = action.payload;
+        state.fetchedAtList = new Date().toLocaleString();
       })
       .addCase(fetchPodcastsAsync.rejected, (state) => {
         state.status = 'failed';
@@ -85,7 +83,14 @@ export const podcastsSlice = createSlice({
       )
       .addCase(fetchPodcastAsync.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.detailedList[action.payload.id] = action.payload;
+        const podcast = state.list.find((podcast) => podcast.id === action.payload.id)
+        state.detailedList[action.payload.id] = {
+          ...action.payload,
+          title: podcast?.title,
+          image: podcast?.image,
+          author: podcast?.author,
+          description: podcast?.description,
+        }
       }
       )
       .addCase(fetchPodcastAsync.rejected, (state) => {
@@ -111,6 +116,6 @@ export const podcastsSlice = createSlice({
 
 export const selectPodcastsList = (state: RootState) => state.podcasts.list;
 export const selectPodcastDetailed = (id: string) => (state: RootState) => state.podcasts.detailedList[id];
-export const selectPodcastEpisodes = (id: string) => (state: RootState) => state.podcasts.episodesList[id];
+export const selectPodcastEpisodes = (id: string) => (state: RootState) => state.podcasts.episodesList[id]?.episodes;
 
 export default podcastsSlice.reducer;
