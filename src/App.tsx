@@ -5,11 +5,9 @@ import { PodcastListScreen } from './screens/PodcastsListScreen';
 import {
   createBrowserRouter,
   RouterProvider,
-  Link,
-  BrowserRouter,
-  Route
 } from "react-router-dom";
 import { PodcastDetailScreen } from './screens/PodcastDetailScreen';
+import { PodcastEpisodeDetailScreen } from './screens/PodcastEpisodeDetailScreen';
 
 const router = createBrowserRouter([
   {
@@ -19,6 +17,10 @@ const router = createBrowserRouter([
   {
     path: "/podcast/:id",
     element: <PodcastDetailScreen/>,
+  },
+  {
+    path: "/podcast/:podcastId/episode/:episodeId",
+    element: <PodcastEpisodeDetailScreen/>,
   },
 ]);
 

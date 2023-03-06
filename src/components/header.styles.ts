@@ -4,7 +4,10 @@ export const styles = {
     header: {
         color: colors.lightBlue,
         fontSize: 23,
-        fontWeight: "bold"
+        fontWeight: "bold",
+        display: "flex",
+        flex: 1,
+        justifyContent: "space-between"
     },
     container: {
         flex: 1,
